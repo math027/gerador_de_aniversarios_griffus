@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Aniversariantes Griffus</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Montserrat", sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #001222, #003057);
+            padding: 20px;
+            color: #ccc;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr 300px;
+            gap: 20px;
+            align-items: stretch; 
+            width: 100%;
+            max-height: 85vh; 
+        }
+
+        /* Painéis */
+        .panel {
+            background: #000000;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        .panel::-webkit-scrollbar { width: 8px; height: 8px; }
+        .panel::-webkit-scrollbar-track { background: #050505; }
+        .panel::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        .panel::-webkit-scrollbar-thumb:hover { background: #4285f4; }
+
+        .panel h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #4285f4;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 10px;
+        }
+
+        /* --- PREVIEW AREA (Centro) --- */
+        .output-panel {
+            background: #1a1a1a; 
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 0;
+            position: relative;
+        }
+        
+        .canvas-scale-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #canvas-area {
+            width: 600px;
+            height: 848px; 
+            flex-shrink: 0;
+            background-image: url(./fundo.jpg); 
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            padding-top: 250px; 
+            padding-left: 40px;
+            padding-right: 40px;
+            box-sizing: border-box;
+            background-color: #fff;
+            
+            transform: scale(0.9);
+            transform-origin: center center;
+        }
+
+        /* Elementos do Canvas */
+        #month-number-display {
+            position: absolute;
+            top: 70px; left: 100px;
+            transform: translate(-50%, -50%) rotate(-6deg);
+            font-family: "Montserrat", sans-serif;
+            font-style: italic;
+            color: white;
+            font-size: 3.5rem;
+            font-weight: 850;
+            z-index: 10;
+            text-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+
+        #month-display {
+            position: absolute;
+            top: 128px; left: 100px; 
+            transform: translate(-50%, -50%) rotate(-10deg);
+            font-family: 'Dancing Script', cursive;
+            color: white;
+            font-size: 2rem;
+            z-index: 10;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        /* Lista Interna */
+        :root { --row-spacing: 15px; }
+        .birthday-list { display: flex; flex-direction: column; }
+        .b-row { display: flex; align-items: center; position: relative; min-height: 45px; margin-bottom: var(--row-spacing); }
+        .balloon {
+            width: 35px; height: 40px;
+            background: radial-gradient(circle at 35% 35%, #5dade2, #2874a6);
+            border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
+            position: absolute; left: -10px; z-index: 2;
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-weight: 900; font-size: 1.4em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            box-shadow: 2px 5px 5px rgba(0,0,0,0.3);
+        }
+        .balloon::after {
+            content: ''; position: absolute; bottom: -4px; width: 0; height: 0;
+            border-left: 5px solid transparent; border-right: 5px solid transparent;
+            border-top: 8px solid #2874a6;
+        }
+        .info-bar {
+            flex: 1; margin-left: 20px; height: 30px;
+            display: flex; align-items: center; border-radius: 0 10px 10px 0;
+            padding-left: 35px; padding-right: 15px;
+            box-shadow: 3px 3px 5px rgba(0,0,0,0.15); color: #000;
+            font-size: 0.9em; font-weight: 600; text-transform: uppercase; position: relative;
+        }
+        .info-bar.blue { background: linear-gradient(90deg, #a4c9e8 0%, #b8cdec 50%, #dbebf9 100%); }
+        .info-bar.purple { background: linear-gradient(90deg, #c39bff 0%, #b07be6 50%, #d5b5ff 100%); }
+        .name { flex: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .separator { width: 1px; height: 20px; background-color: #666; margin: 0 10px; }
+        .sector { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333; }
+
+        /* --- INPUTS & UI GERAL --- */
+        .input-box { position: relative; margin-bottom: 15px; }
+        label { font-size: 12px; color: #888; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .input-box input, .input-box select {
+            width: 100%; height: 50px; background: #050505; color: #fff; 
+            font-size: 16px; border-radius: 6px; border: 1px solid #333;
+            padding: 0 15px; transition: 0.3s;
+        }
+        .input-box input:focus, .input-box select:focus { border-color: #4285f4; outline: none; }
+        input[type="range"] { width: 100%; height: 5px; cursor: pointer; accent-color: #4285f4; background: #333; border-radius: 5px; }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        button { border: none; cursor: pointer; border-radius: 6px; font-weight: 600; text-transform: uppercase; transition: 0.3s; font-size: 14px; }
+        .btn-action { width: 100%; padding: 15px 0; color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .btn-add { background: #27c468; } .btn-add:hover { background: #21a556; transform: translateY(-2px); }
+        .btn-update { background: #f1c80b; color: #000; display: none; } .btn-update:hover { background: #d9b40a; transform: translateY(-2px); }
+        .generate-btn { background: #4285f4; color: white; width: 100%; padding: 15px; margin-top: auto; font-size: 1.1em; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3); }
+        .generate-btn:hover { background: #3367d6; transform: translateY(-2px); }
+
+        .history-list { list-style: none; margin-top: 10px; }
+        .history-list li {
+            background: #111; padding: 12px; margin-bottom: 8px;
+            border-radius: 4px; color: #aaa; display: flex; justify-content: space-between;
+            align-items: center; font-size: 14px; border-left: 3px solid #333; transition: 0.3s;
+        }
+        .history-list li:hover { border-left-color: #4285f4; background: #161616; }
+        .history-list li b { color: #fff; margin-right: 5px; }
+        .action-icons { display: flex; gap: 5px; }
+        .icon-btn { background: transparent; color: #666; padding: 4px; border-radius: 4px; display: flex; alignItems: center; justifyContent: center; }
+        .icon-btn:hover { color: #fff; background: #333; } .icon-btn.del:hover { color: #e64a4a; }
+
+        /* --- FOOTER --- */
+        .footer-signature {
+            width: 100%;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 20px;
+            border-top: 1px solid #1a1a1a;
+        }
+        .footer-content p { margin-bottom: 10px; font-size: 0.9rem; color: #666; }
+        .footer-content strong { color: #fff; }
+        .social-links { display: flex; justify-content: center; gap: 20px; }
+        .social-links a { color: #666; font-size: 1.5rem; transition: all 0.3s ease; text-decoration: none; }
+        .social-links a:hover { color: #4285f4; transform: translateY(-3px); }
+
+        @media (max-width: 1000px) {
+            .layout-grid { grid-template-columns: 1fr; max-height: none; }
+            .panel { min-height: 500px; }
+            .output-panel { padding: 40px 0; }
+            #canvas-area { transform: scale(0.5); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="layout-grid">
+            
+            <div class="panel settings-panel">
+                <h2>Configurações</h2>
+                <div class="input-box">
+                    <label>Mês de Referência</label>
+                    <select id="month-select" onchange="updateMonth()">
+                        <option value="Janeiro">Janeiro</option>
+                        <option value="Fevereiro">Fevereiro</option>
+                        <option value="Março">Março</option>
+                        <option value="Abril">Abril</option>
+                        <option value="Maio">Maio</option>
+                        <option value="Junho">Junho</option>
+                        <option value="Julho">Julho</option>
+                        <option value="Agosto">Agosto</option>
+                        <option value="Setembro">Setembro</option>
+                        <option value="Outubro">Outubro</option>
+                        <option value="Novembro">Novembro</option>
+                        <option value="Dezembro">Dezembro</option>
+                    </select>
+                </div>
+                <div class="input-box">
+                    <label>Espaçamento Vertical</label>
+                    <input type="range" id="spacing-range" min="-10" max="40" value="15" oninput="updateSpacing()">
+                </div>
+                <hr style="border-color: #333; margin: 20px 0;">
+                <h2>Novo Aniversariante</h2>
+                <input type="hidden" id="edit-id">
+                <div class="input-box">
+                    <label>Dia</label>
+                    <input type="number" id="day" min="1" max="31" placeholder="Ex: 12">
+                </div>
+                <div class="input-box">
+                    <label>Nome</label>
+                    <input type="text" id="name" placeholder="Ex: Ana Silva">
+                </div>
+                <div class="input-box">
+                    <label>Setor</label>
+                    <input type="text" id="sector" placeholder="Ex: Logística">
+                </div>
+                <div class="btn-group">
+                    <button class="btn-action btn-add" id="btn-add" onclick="addPerson()">Adicionar</button>
+                    <button class="btn-action btn-update" id="btn-update" onclick="updatePerson()">Atualizar</button>
+                </div>
+            </div>
+
+            <div class="panel output-panel">
+                <div class="canvas-scale-wrapper">
+                    <div id="canvas-area">
+                        <div id="month-number-display">01</div>
+                        <div id="month-display">Janeiro</div>
+                        <div class="birthday-list" id="birthday-display"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel list-panel">
+                <h2>Lista Cadastrada</h2>
+                <div style="font-size: 12px; color: #666; margin-bottom: 10px;">
+                    Gerencie os aniversariantes abaixo.
+                </div>
+                <ul id="edit-list-container" class="history-list">
+                    <li style="justify-content: center; opacity: 0.5;">Nenhum cadastrado</li>
+                </ul>
+                <button class="generate-btn" onclick="downloadImage()">
+                    <span class="material-icons" style="vertical-align: middle; margin-right: 5px;">download</span>
+                    Salvar Imagem
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="footer-signature">
+        <div class="footer-content">
+          <p>Desenvolvido por: <strong>Matheus</strong></p>
+          <div class="social-links">
+            <a href="https://github.com/math027" target="_blank" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://linkedin.com/in/matheussouzx" target="_blank" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+            <a href="https://www.instagram.com/matheussouzx_" target="_blank" aria-label="Instagram">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+    </footer>
+
+    <script>
+        let people = [];
+        let editingId = null;
+
+        const monthMap = {
+            "Janeiro": "01", "Fevereiro": "02", "Março": "03", "Abril": "04",
+            "Maio": "05", "Junho": "06", "Julho": "07", "Agosto": "08",
+            "Setembro": "09", "Outubro": "10", "Novembro": "11", "Dezembro": "12"
+        };
+
+        function updateMonth() {
+            const select = document.getElementById('month-select');
+            document.getElementById('month-display').innerText = select.value;
+            document.getElementById('month-number-display').innerText = monthMap[select.value];
+        }
+
+        function formatDay(day) { return day < 10 ? '0' + day : day; }
+
+        function addPerson() {
+            const day = document.getElementById('day').value;
+            const name = document.getElementById('name').value;
+            const sector = document.getElementById('sector').value;
+
+            if (!day || !name || !sector) return alert("Preencha todos os campos!");
+            if(day > 31 || day <= 0) return alert("Informe um dia válido.");
+
+            people.push({
+                id: Date.now(),
+                day: parseInt(day),
+                name: name.toUpperCase(),
+                sector: sector.toUpperCase()
+            });
+            people.sort((a, b) => a.day - b.day);
+            clearForm();
+            render();
+        }
+
+        function render() {
+            const display = document.getElementById('birthday-display');
+            const list = document.getElementById('edit-list-container');
+            display.innerHTML = ''; list.innerHTML = '';
+
+            if(people.length === 0) list.innerHTML = '<li style="justify-content: center; opacity: 0.5;">Nenhum cadastrado</li>';
+
+            people.forEach((p, index) => {
+                // Canvas Item
+                const row = document.createElement('div'); row.className = 'b-row';
+                row.innerHTML = `
+                    <div class="balloon">${formatDay(p.day)}</div>
+                    <div class="info-bar ${index % 2 === 0 ? 'blue' : 'purple'}">
+                        <div class="name">${p.name}</div><div class="separator"></div><div class="sector">${p.sector}</div>
+                    </div>
+                `;
+                display.appendChild(row);
+
+                // List Item
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span><b>${formatDay(p.day)}</b> ${p.name}</span>
+                    <div class="action-icons">
+                        <button class="icon-btn" onclick="startEdit(${p.id})"><span class="material-icons" style="font-size:18px">edit</span></button>
+                        <button class="icon-btn del" onclick="removePerson(${p.id})"><span class="material-icons" style="font-size:18px">delete</span></button>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function removePerson(id) { people = people.filter(p => p.id !== id); render(); }
+
+        function startEdit(id) {
+            const p = people.find(p => p.id === id);
+            if (p) {
+                document.getElementById('day').value = p.day;
+                document.getElementById('name').value = p.name;
+                document.getElementById('sector').value = p.sector;
+                document.getElementById('edit-id').value = p.id;
+                document.getElementById('btn-add').style.display = 'none';
+                document.getElementById('btn-update').style.display = 'block';
+                editingId = id;
+            }
+        }
+
+        function updatePerson() {
+            const day = document.getElementById('day').value;
+            const name = document.getElementById('name').value;
+            const sector = document.getElementById('sector').value;
+            const idx = people.findIndex(p => p.id === editingId);
+            if (idx !== -1 && day && name && sector) {
+                people[idx] = { ...people[idx], day: parseInt(day), name: name.toUpperCase(), sector: sector.toUpperCase() };
+                people.sort((a, b) => a.day - b.day);
+                clearForm(); render();
+            }
+        }
+
+        function updateSpacing() {
+            document.documentElement.style.setProperty("--row-spacing", document.getElementById("spacing-range").value + "px");
+        }
+
+        function clearForm() {
+            document.getElementById('day').value = ''; document.getElementById('name').value = '';
+            document.getElementById('sector').value = ''; document.getElementById('edit-id').value = '';
+            document.getElementById('btn-add').style.display = 'block'; document.getElementById('btn-update').style.display = 'none';
+            editingId = null;
+        }
+
+        function downloadImage() {
+            const element = document.getElementById("canvas-area");
+            
+            html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: null,
+                onclone: (clonedDoc) => {
+                    clonedDoc.getElementById("canvas-area").style.transform = "none";
+                }
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `aniversariantes_${document.getElementById('month-select').value}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+
+        updateMonth();
+    </script>
+</body>
+</html>

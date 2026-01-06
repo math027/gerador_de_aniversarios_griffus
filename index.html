@@ -10,24 +10,35 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <style>
+        :root {
+            --griffus-pink: #e91e63;       /* Cor principal vibrante */
+            --griffus-pink-dark: #c2185b;  /* Cor para hover */
+            --griffus-text-dark: #212121;  /* Texto principal */
+            --griffus-text-gray: #757575;  /* Texto secundário/labels */
+            --griffus-bg-light: #fafafa;   /* Fundo da página */
+            --griffus-border-subtle: #f8bbd0; /* Borda sutil rosada */
+            --input-border: #e0e0e0;
+            --focus-shadow: rgba(233, 30, 99, 0.25);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Montserrat", sans-serif;
+            font-family: 'Poppins', sans-serif; /* Fonte atualizada */
         }
 
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background: linear-gradient(180deg, #001222, #003057);
+            background-color: var(--griffus-bg-light); /* Fundo claro */
             padding: 20px;
-            color: #ccc;
+            color: var(--griffus-text-dark);
         }
 
         .main-container {
@@ -43,51 +54,54 @@
         .layout-grid {
             display: grid;
             grid-template-columns: 320px 1fr 300px;
-            gap: 20px;
+            gap: 25px;
             align-items: stretch; 
             width: 100%;
-            max-height: 85vh; 
+            max-height: 88vh; 
         }
 
-        /* Painéis */
+        /* --- PAINÉIS (Estilo Griffus) --- */
         .panel {
-            background: #000000;
+            background: #ffffff;
             border-radius: 12px;
             padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid #1a1a1a;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* Sombra suave */
+            border: 1px solid var(--griffus-border-subtle);
             display: flex;
             flex-direction: column;
             overflow-y: auto;
             height: 100%;
         }
 
+        /* Scrollbar estilizada para o tema claro */
         .panel::-webkit-scrollbar { width: 8px; height: 8px; }
-        .panel::-webkit-scrollbar-track { background: #050505; }
-        .panel::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        .panel::-webkit-scrollbar-thumb:hover { background: #4285f4; }
+        .panel::-webkit-scrollbar-track { background: #f0f0f0; }
+        .panel::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 4px; }
+        .panel::-webkit-scrollbar-thumb:hover { background: var(--griffus-pink); }
 
         .panel h2 {
-            font-size: 18px;
+            font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 20px;
-            color: #4285f4;
+            color: var(--griffus-pink);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid #222;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #fce4ec;
             padding-bottom: 10px;
         }
 
         /* --- PREVIEW AREA (Centro) --- */
         .output-panel {
-            background: #1a1a1a; 
-            border: 1px solid #333;
+            background: #ffffff; 
+            border: 1px solid var(--griffus-border-subtle);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             padding: 0;
             position: relative;
+            background-image: radial-gradient(#f8f8f8 10%, transparent 10%); /* Padrão de fundo sutil */
+            background-size: 20px 20px;
         }
         
         .canvas-scale-wrapper {
@@ -106,7 +120,7 @@
             background-size: cover;
             background-position: center;
             position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2); /* Sombra mais destacada para o canvas */
             padding-top: 250px; 
             padding-left: 40px;
             padding-right: 40px;
@@ -115,9 +129,10 @@
             
             transform: scale(0.9);
             transform-origin: center center;
+            border-radius: 4px; /* Leve arredondamento na "folha" */
         }
 
-        /* Elementos do Canvas */
+        /* Elementos do Canvas (Mantidos originais ou levemente ajustados para legibilidade interna) */
         #month-number-display {
             position: absolute;
             top: 70px; left: 100px;
@@ -145,88 +160,174 @@
             pointer-events: none;
         }
 
-        /* Lista Interna */
+        /* Lista Interna do Canvas */
         :root { --row-spacing: 15px; }
         .birthday-list { display: flex; flex-direction: column; }
         .b-row { display: flex; align-items: center; position: relative; min-height: 45px; margin-bottom: var(--row-spacing); }
+        
         .balloon {
             width: 35px; height: 40px;
-            background: radial-gradient(circle at 35% 35%, #5dade2, #2874a6);
+            background: radial-gradient(circle at 35% 35%, #e91e63, #ad1457); /* Ajustado para Rosa Griffus */
             border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
             position: absolute; left: -10px; z-index: 2;
             display: flex; justify-content: center; align-items: center;
             color: white; font-weight: 900; font-size: 1.4em;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
             box-shadow: 2px 5px 5px rgba(0,0,0,0.3);
+            font-family: 'Montserrat', sans-serif;
         }
         .balloon::after {
             content: ''; position: absolute; bottom: -4px; width: 0; height: 0;
             border-left: 5px solid transparent; border-right: 5px solid transparent;
-            border-top: 8px solid #2874a6;
+            border-top: 8px solid #ad1457;
         }
+
         .info-bar {
             flex: 1; margin-left: 20px; height: 30px;
             display: flex; align-items: center; border-radius: 0 10px 10px 0;
             padding-left: 35px; padding-right: 10px;
             box-shadow: 3px 3px 5px rgba(0,0,0,0.15); color: #000;
             font-size: 0.8em; font-weight: 600; text-transform: uppercase; position: relative;
+            font-family: 'Montserrat', sans-serif;
         }
-        .info-bar.blue { background: linear-gradient(90deg, #a4c9e8 0%, #b8cdec 50%, #dbebf9 100%); }
-        .info-bar.purple { background: linear-gradient(90deg, #c39bff 0%, #b07be6 50%, #d5b5ff 100%); }
+        
+        /* Cores das barras internas ajustadas para tons pastéis que combinam com rosa */
+        .info-bar.blue { background: linear-gradient(90deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%); color: #880e4f; }
+        .info-bar.purple { background: linear-gradient(90deg, #f3e5f5 0%, #e1bee7 50%, #ce93d8 100%); color: #4a148c; }
+        
         .name { flex: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .separator { width: 1px; height: 20px; background-color: #666; margin: 0 10px; }
-        .sector { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333; }
+        .separator { width: 1px; height: 20px; background-color: rgba(0,0,0,0.2); margin: 0 10px; }
+        .sector { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.8; }
 
         /* --- INPUTS & UI GERAL --- */
-        .input-box { position: relative; margin-bottom: 15px; }
-        label { font-size: 12px; color: #888; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .input-box input, .input-box select {
-            width: 100%; height: 50px; background: #050505; color: #fff; 
-            font-size: 16px; border-radius: 6px; border: 1px solid #333;
-            padding: 0 15px; transition: 0.3s;
+        .input-box { position: relative; margin-bottom: 20px; }
+        
+        label { 
+            font-size: 0.85rem; 
+            color: var(--griffus-text-gray); 
+            font-weight: 500; 
+            text-transform: uppercase; 
+            margin-bottom: 8px; 
+            display: block; 
         }
-        .input-box input:focus, .input-box select:focus { border-color: #4285f4; outline: none; }
-        input[type="range"] { width: 100%; height: 5px; cursor: pointer; accent-color: #4285f4; background: #333; border-radius: 5px; }
+        
+        .input-box input, .input-box select {
+            width: 100%; height: 50px; 
+            background: #fcfcfc; 
+            color: var(--griffus-text-dark); 
+            font-size: 1rem; 
+            border-radius: 8px; 
+            border: 1px solid var(--input-border);
+            padding: 0 15px; 
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .input-box input:focus, .input-box select:focus { 
+            border-color: var(--griffus-pink); 
+            box-shadow: 0 0 0 4px var(--focus-shadow);
+            background-color: #fff;
+        }
+
+        /* Range Input Styling */
+        input[type="range"] { 
+            width: 100%; height: 6px; cursor: pointer; 
+            accent-color: var(--griffus-pink); 
+            background: #e0e0e0; border-radius: 5px; 
+            border: none;
+        }
 
         .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        button { border: none; cursor: pointer; border-radius: 6px; font-weight: 600; text-transform: uppercase; transition: 0.3s; font-size: 14px; }
-        .btn-action { width: 100%; padding: 15px 0; color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .btn-add { background: #27c468; } .btn-add:hover { background: #21a556; transform: translateY(-2px); }
-        .btn-update { background: #f1c80b; color: #000; display: none; } .btn-update:hover { background: #d9b40a; transform: translateY(-2px); }
-        .generate-btn { background: #4285f4; color: white; width: 100%; padding: 15px; margin-top: auto; font-size: 1.1em; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3); }
-        .generate-btn:hover { background: #3367d6; transform: translateY(-2px); }
-
-        .history-list { list-style: none; margin-top: 10px; }
-        .history-list li {
-            background: #111; padding: 12px; margin-bottom: 8px;
-            border-radius: 4px; color: #aaa; display: flex; justify-content: space-between;
-            align-items: center; font-size: 14px; border-left: 3px solid #333; transition: 0.3s;
+        
+        button { 
+            border: none; cursor: pointer; 
+            border-radius: 30px; /* Estilo arredondado Griffus */
+            font-weight: 600; text-transform: uppercase; 
+            transition: all 0.3s ease; font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .history-list li:hover { border-left-color: #4285f4; background: #161616; }
-        .history-list li b { color: #fff; margin-right: 5px; }
+        
+        .btn-action { width: 100%; padding: 15px 0; color: #fff; }
+        
+        .btn-add { 
+            background-color: var(--griffus-pink); 
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+        } 
+        .btn-add:hover { 
+            background-color: var(--griffus-pink-dark); 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+        }
+        
+        .btn-update { 
+            background: #fbc02d; color: #fff; display: none; 
+            box-shadow: 0 4px 15px rgba(251, 192, 45, 0.3);
+        } 
+        .btn-update:hover { background: #f9a825; transform: translateY(-2px); }
+        
+        .generate-btn { 
+            background-color: var(--griffus-pink); 
+            color: white; width: 100%; padding: 15px; 
+            margin-top: auto; font-size: 1rem; 
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+        }
+        .generate-btn:hover { 
+            background-color: var(--griffus-pink-dark); 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+        }
+
+        /* --- LISTA LATERAL --- */
+        .history-list { list-style: none; margin-top: 10px; }
+        
+        .history-list li {
+            background: #f9f9f9; padding: 12px; margin-bottom: 8px;
+            border-radius: 8px; color: var(--griffus-text-dark); 
+            display: flex; justify-content: space-between;
+            align-items: center; font-size: 14px; 
+            border: 1px solid #eee;
+            border-left: 4px solid #ddd; 
+            transition: 0.3s;
+        }
+        
+        .history-list li:hover { 
+            border-left-color: var(--griffus-pink); 
+            background: #fff; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .history-list li b { color: var(--griffus-pink); margin-right: 5px; font-weight: 600; }
+        
         .action-icons { display: flex; gap: 5px; }
-        .icon-btn { background: transparent; color: #666; padding: 4px; border-radius: 4px; display: flex; alignItems: center; justifyContent: center; }
-        .icon-btn:hover { color: #fff; background: #333; } .icon-btn.del:hover { color: #e64a4a; }
+        
+        .icon-btn { 
+            background: transparent; color: #9e9e9e; 
+            padding: 6px; border-radius: 50%; 
+            display: flex; alignItems: center; justifyContent: center; 
+            box-shadow: none; width: 32px; height: 32px;
+        }
+        .icon-btn:hover { color: var(--griffus-pink); background: #fce4ec; } 
+        .icon-btn.del:hover { color: #d32f2f; background: #ffebee; }
 
         /* --- FOOTER --- */
         .footer-signature {
             width: 100%;
-            padding: 30px 0;
+            padding: 20px 0;
             text-align: center;
             margin-top: 20px;
-            border-top: 1px solid #1a1a1a;
+            border-top: 1px solid #e0e0e0;
         }
-        .footer-content p { margin-bottom: 10px; font-size: 0.9rem; color: #666; }
-        .footer-content strong { color: #fff; }
+        .footer-content p { margin-bottom: 10px; font-size: 0.9rem; color: var(--griffus-text-gray); }
+        .footer-content strong { color: var(--griffus-pink); }
         .social-links { display: flex; justify-content: center; gap: 20px; }
-        .social-links a { color: #666; font-size: 1.5rem; transition: all 0.3s ease; text-decoration: none; }
-        .social-links a:hover { color: #4285f4; transform: translateY(-3px); }
+        .social-links a { color: #9e9e9e; font-size: 1.5rem; transition: all 0.3s ease; text-decoration: none; }
+        .social-links a:hover { color: var(--griffus-pink); transform: translateY(-3px); }
 
         @media (max-width: 1000px) {
             .layout-grid { grid-template-columns: 1fr; max-height: none; }
-            .panel { min-height: 500px; }
-            .output-panel { padding: 40px 0; }
-            #canvas-area { transform: scale(0.5); }
+            .panel { min-height: auto; }
+            .output-panel { padding: 40px 0; min-height: 500px; }
+            #canvas-area { transform: scale(0.6); }
         }
     </style>
 </head>
@@ -258,7 +359,7 @@
                     <label>Espaçamento Vertical</label>
                     <input type="range" id="spacing-range" min="-10" max="40" value="15" oninput="updateSpacing()">
                 </div>
-                <hr style="border-color: #333; margin: 20px 0;">
+                <hr style="border-color: #f0f0f0; margin: 20px 0;">
                 <h2>Novo Aniversariante</h2>
                 <input type="hidden" id="edit-id">
                 <div class="input-box">
@@ -291,11 +392,11 @@
 
             <div class="panel list-panel">
                 <h2>Lista Cadastrada</h2>
-                <div style="font-size: 12px; color: #666; margin-bottom: 10px;">
+                <div style="font-size: 13px; color: #757575; margin-bottom: 15px;">
                     Gerencie os aniversariantes abaixo.
                 </div>
                 <ul id="edit-list-container" class="history-list">
-                    <li style="justify-content: center; opacity: 0.5;">Nenhum cadastrado</li>
+                    <li style="justify-content: center; opacity: 0.6; background: transparent; border: none;">Nenhum cadastrado</li>
                 </ul>
                 <button class="generate-btn" onclick="downloadImage()">
                     <span class="material-icons" style="vertical-align: middle; margin-right: 5px;">download</span>
@@ -365,7 +466,7 @@
             const list = document.getElementById('edit-list-container');
             display.innerHTML = ''; list.innerHTML = '';
 
-            if(people.length === 0) list.innerHTML = '<li style="justify-content: center; opacity: 0.5;">Nenhum cadastrado</li>';
+            if(people.length === 0) list.innerHTML = '<li style="justify-content: center; opacity: 0.6; background: transparent; border: none;">Nenhum cadastrado</li>';
 
             people.forEach((p, index) => {
                 // Canvas Item

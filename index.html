@@ -8,6 +8,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -29,14 +31,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif; /* Fonte atualizada */
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: var(--griffus-bg-light); /* Fundo claro */
+            background-color: var(--griffus-bg-light); 
             padding: 20px;
             color: var(--griffus-text-dark);
         }
@@ -60,12 +62,12 @@
             max-height: 88vh; 
         }
 
-        /* --- PAINÉIS (Estilo Griffus) --- */
+        /* --- PAINÉIS --- */
         .panel {
             background: #ffffff;
             border-radius: 12px;
             padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* Sombra suave */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); 
             border: 1px solid var(--griffus-border-subtle);
             display: flex;
             flex-direction: column;
@@ -113,10 +115,10 @@
         }
 
         #canvas-area {
-            width: 600px;
-            height: 848px; 
+            width: 700px;
+            height: 900px; 
             flex-shrink: 0;
-            background-image: url(./fundo.jpg); 
+            background-image: url(./fundo.png); 
             background-size: cover;
             background-position: center;
             position: relative;
@@ -149,11 +151,12 @@
 
         #month-display {
             position: absolute;
-            top: 128px; left: 100px; 
-            transform: translate(-50%, -50%) rotate(-10deg);
-            font-family: 'Dancing Script', cursive;
-            color: white;
-            font-size: 2rem;
+            top: 110px; left: 250px; 
+            transform: translate(-50%, -50%);
+            font-family: 'Playfair Display', serif;
+            /* font-style: italic; */
+            color: rgb(114, 49, 109);
+            font-size: 5rem;
             z-index: 10;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             white-space: nowrap;
@@ -167,7 +170,7 @@
         
         .balloon {
             width: 35px; height: 40px;
-            background: radial-gradient(circle at 35% 35%, #e91e63, #ad1457); /* Ajustado para Rosa Griffus */
+            background: radial-gradient(circle at 35% 35%, #6f35a7, #6f35a7); /* Ajustado para Rosa Griffus */
             border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
             position: absolute; left: -10px; z-index: 2;
             display: flex; justify-content: center; align-items: center;
@@ -177,9 +180,9 @@
             font-family: 'Montserrat', sans-serif;
         }
         .balloon::after {
-            content: ''; position: absolute; bottom: -4px; width: 0; height: 0;
+            content: ''; position: absolute; bottom: -5px; width: 0; height: 0;
             border-left: 5px solid transparent; border-right: 5px solid transparent;
-            border-top: 8px solid #ad1457;
+            border-top: 8px solid #6354e6;
         }
 
         .info-bar {
@@ -192,8 +195,10 @@
         }
         
         /* Cores das barras internas ajustadas para tons pastéis que combinam com rosa */
-        .info-bar.blue { background: linear-gradient(90deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%); color: #880e4f; }
-        .info-bar.purple { background: linear-gradient(90deg, #f3e5f5 0%, #e1bee7 50%, #ce93d8 100%); color: #4a148c; }
+        /* .info-bar.blue { background: linear-gradient(90deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%); color: #880e4f; } 
+        .info-bar.purple { background: linear-gradient(90deg, #f3e5f5 0%, #e1bee7 50%, #ce93d8 100%); color: #4a148c; } */
+        .info-bar.blue { background-color: #ffffff;}
+        .info-bar.purple { background-color: #ffffff;}
         
         .name { flex: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .separator { width: 1px; height: 20px; background-color: rgba(0,0,0,0.2); margin: 0 10px; }
@@ -383,7 +388,7 @@
             <div class="panel output-panel">
                 <div class="canvas-scale-wrapper">
                     <div id="canvas-area">
-                        <div id="month-number-display">01</div>
+                        <!-- <div id="month-number-display">01</div> -->
                         <div id="month-display">Janeiro</div>
                         <div class="birthday-list" id="birthday-display"></div>
                     </div>
